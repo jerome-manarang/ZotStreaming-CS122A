@@ -1,7 +1,7 @@
 import sys
 import os
 from import_data import reset_database, import_data
-from booleans import insert_viewer, add_genre, delete_viewer, insert_movie, insert_session, update_release
+from booleans import insert_viewer, add_genre, delete_viewer, insert_movie, insert_session, update_release, list_releases,popular_release,release_title, active_viewers,videos_viewed
 
 def main():
     if len(sys.argv) < 2:
@@ -92,16 +92,37 @@ def main():
 
     elif command == "listReleases":
         if len(sys.argv) != 4:
-            print("Error, please input correct parameters: python3 project.py listReleases <rid> <title>")
+            print("Error, please input correct parameters: python3 project.py listReleases <uid>")
             sys.exit(1)
-        success = list_releases(sys.argv[2], sys.argv[3])
+        success = list_releases(sys.argv[2])
+        print(success)
+    
+    elif command == "popularRelease":
+        if len(sys.argv) != 4:
+            print("Error, please input correct parameters: python3 project.py popularRelease <N>")
+            sys.exit(1)
+        success = popular_release(sys.argv[2])
         print(success)
 
-    elif command == "popularReleases":
+    elif command == "releaseTitle":
         if len(sys.argv) != 4:
-            print("Error, please input correct parameters: python3 project.py listReleases <rid> <title>")
+            print("Error, please input correct parameters: python3 project.py releaseTitle <sid>")
             sys.exit(1)
-        success = popular_release(sys.argv[2], sys.argv[3])
+        success = release_title(sys.argv[2])
+        print(success)
+
+    elif command == "activeViewer":
+        if len(sys.argv) != 4:
+            print("Error, please input correct parameters: python3 project.py activeViewer <N> <start:date> <end:date>")
+            sys.exit(1)
+        success = active_viewers(sys.argv[2], sys.argv[3],sys.argv[4])
+        print(success)
+
+    elif command == "videosViewed":
+        if len(sys.argv) != 4:
+            print("Error, please input correct parameters: python3 project.py videosViewed <rid>")
+            sys.exit(1)
+        success = videos_viewed(sys.argv[2])
         print(success)
 
 
