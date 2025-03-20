@@ -166,7 +166,7 @@ def popular_release(N):
     cursor = db.cursor()
 
     sql = f"""
-    SELECT r.rid, r.title, COUNT(rv.review_id) AS reviewCount
+    SELECT r.rid, r.title, COUNT(rv.rvid) AS reviewCount
     FROM reviews rv
     JOIN releases r ON rv.rid = r.rid
     GROUP BY r.rid, r.title
@@ -181,9 +181,10 @@ def popular_release(N):
             print("No popular releases found.")
             return False
        # print("Table - rid, title, reviewCount")
-        #for row in results:
+        for row in results:
             #print(row)
-        #return True
+            print(",".join(map(str, row)))
+        return True
     except mysql.connector.Error as e:
         print("Error fetching popular releases:", e)
         return False
