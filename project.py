@@ -123,10 +123,10 @@ def main():
             print("Error, please input correct parameters: python3 project.py popularRelease <N>")
             sys.exit(1)
         success = popular_release(sys.argv[2])
-        if success == True:
-            print("Success")
-        else:
-            print("Fail")
+        #if success == True:
+            #print("Success")
+        #else:
+            #print("Fail")
 
     elif command == "releaseTitle":
         if len(sys.argv) != 3:
@@ -140,11 +140,7 @@ def main():
             print("Error, please input correct parameters: python3 project.py activeViewer <N> <start:date> <end:date>")
             sys.exit(1)
         success = active_viewers(sys.argv[2], sys.argv[3],sys.argv[4])
-        if success == True:
-            print("Success")
-        else:
-            print("Fail")
-
+      
     elif command == "videosViewed":
         if len(sys.argv) != 3:
             print("Error, please input correct parameters: python3 project.py videosViewed <rid>")

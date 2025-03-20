@@ -34,28 +34,39 @@ def add_genre(uid, genre):
     cursor = db.cursor()
 
     try:
-        cursor.execute("SELECT subscription FROM viewers WHERE uid = %s", (uid,))
+        
+        cursor.execute("SELECT genres FROM users WHERE uid = %s", (uid,))
         result = cursor.fetchone()
 
         if result is None:
+            print("User not found.")
             return False
         
         existing_genres = result[0] if result[0] else "" 
-        new_genres = ";".join(set(existing_genres.split(";") + [genre]))
 
-        cursor.fetchall() 
+        
+        genres_list = existing_genres.split(";") if existing_genres else []
+        if genre not in genres_list:
+            genres_list.append(genre)
+        else:
+            return False
 
-        #updating the database
-        update_sql = "UPDATE viewers SET subscription = %s WHERE uid = %s"
+        new_genres = ";".join(genres_list)
+
+     
+        update_sql = "UPDATE users SET genres = %s WHERE uid = %s"
         cursor.execute(update_sql, (new_genres, uid))
         db.commit()
 
+        
         return True
     except mysql.connector.Error as e:
+        print("Error updating genres:", e)
         return False
     finally:
         cursor.close()
         db.close()
+
 
 def delete_viewer(uid):
     db = connect_db()
@@ -229,7 +240,7 @@ def active_viewers(N, start_date, end_date):
     cursor = db.cursor()
 
     sql = """
-    SELECT v.uid, v.first, v.last
+    SELECT v.uid, v.first_name, v.last_name
     FROM viewers v
     JOIN (
         SELECT uid, COUNT(*) as session_count
@@ -248,8 +259,8 @@ def active_viewers(N, start_date, end_date):
             print("No active viewers found.")
             return False
         #print("Table - UID, first name, last name")
-        #for row in results:
-            #print(row)]
+        for row in results:
+            print(",".join(map(str, row)))
         return True
     except mysql.connector.Error as e:
         print("Error fetching active viewers:", e)
