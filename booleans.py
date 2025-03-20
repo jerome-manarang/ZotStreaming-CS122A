@@ -165,17 +165,17 @@ def popular_release(N):
     db = connect_db()
     cursor = db.cursor()
 
-    sql = """
+    sql = f"""
     SELECT r.rid, r.title, COUNT(rv.review_id) AS reviewCount
     FROM reviews rv
     JOIN releases r ON rv.rid = r.rid
     GROUP BY r.rid, r.title
     ORDER BY reviewCount DESC, r.rid DESC
-    LIMIT %s;
+    LIMIT {int(N)};
     """
 
     try:
-        cursor.execute(sql, (N,))
+        cursor.execute(sql)
         results = cursor.fetchall()
         if not results:
             print("No popular releases found.")
@@ -248,7 +248,7 @@ def active_viewers(N, start_date, end_date):
             return False
         #print("Table - UID, first name, last name")
         #for row in results:
-            #print(row)
+            #print(row)]
         return True
     except mysql.connector.Error as e:
         print("Error fetching active viewers:", e)
