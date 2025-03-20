@@ -34,29 +34,24 @@ def add_genre(uid, genre):
     cursor = db.cursor()
 
     try:
-        # Fetch existing subscription (genres)
         cursor.execute("SELECT subscription FROM viewers WHERE uid = %s", (uid,))
-        result = cursor.fetchone()  # Fetch the result properly
+        result = cursor.fetchone()
 
         if result is None:
-            print("Viewer not found.")
             return False
         
-        existing_genres = result[0] if result[0] else ""  # Ensure we don't get None
+        existing_genres = result[0] if result[0] else "" 
         new_genres = ";".join(set(existing_genres.split(";") + [genre]))
 
-        # Ensure the result is fully fetched before running another query
-        cursor.fetchall()  # Prevent "Unread result found" error
+        cursor.fetchall() 
 
-        # Update the subscription field
+        #updating the database
         update_sql = "UPDATE viewers SET subscription = %s WHERE uid = %s"
         cursor.execute(update_sql, (new_genres, uid))
         db.commit()
 
-        print("Genre added successfully.")
         return True
     except mysql.connector.Error as e:
-        print("Error updating genres:", e)
         return False
     finally:
         cursor.close()
@@ -135,7 +130,6 @@ def update_release(rid, title):
     finally:
         cursor.close()
         db.close()
-
 
 def list_releases(uid):
     db = connect_db()
