@@ -7,22 +7,22 @@ from db_connection import connect_db
 ###
 
 
-def insert_viewer(uid, email, nickname, street, city, state, zip, genres, joined_date, first, last, subscription):
+def insert_viewer(uid, first_name, last_name, subscription):
     db = connect_db()
     cursor = db.cursor()
     
     sql = """
-    INSERT INTO viewers (uid, email, nickname, street, city, state, zip, genres, joined_date, first, last, subscription)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+    INSERT INTO viewers (uid, first_name, last_name, subscription)
+    VALUES (%s, %s, %s, %s);
     """
     
     try:
-        cursor.execute(sql, (uid, email, nickname, street, city, state, zip, genres, joined_date, first, last, subscription))
+        cursor.execute(sql, (uid, first_name, last_name, subscription))
         db.commit()
-        print("Viewer inserted successfully.")
+        #print("Viewer inserted successfully.")
         return True
     except mysql.connector.Error as e:
-        print("Error inserting viewer:", e)
+        #print("Error inserting viewer:", e)
         return False
     finally:
         cursor.close()
@@ -65,10 +65,10 @@ def delete_viewer(uid):
     try:
         cursor.execute(sql, (uid,))
         db.commit()
-        print("Viewer deleted successfully.")
+        #print("Viewer deleted successfully.")
         return True
     except mysql.connector.Error as e:
-        print("Error deleting viewer:", e)
+        #print("Error deleting viewer:", e)
         return False
     finally:
         cursor.close()
@@ -83,10 +83,10 @@ def insert_movie(rid, website_url):
     try:
         cursor.execute(sql, (rid, website_url))
         db.commit()
-        print("Movie inserted successfully.")
+        #print("Movie inserted successfully.")
         return True
     except mysql.connector.Error as e:
-        print("Error inserting movie:", e)
+        #print("Error inserting movie:", e)
         return False
     finally:
         cursor.close()
@@ -104,10 +104,10 @@ def insert_session(sid, uid, rid, ep_num, initiate_at, leave_at, quality, device
     try:
         cursor.execute(sql, (sid, uid, rid, ep_num, initiate_at, leave_at, quality, device))
         db.commit()
-        print("Session inserted successfully.")
+        #print("Session inserted successfully.")
         return True
     except mysql.connector.Error as e:
-        print("Error inserting session:", e)
+        #print("Error inserting session:", e)
         return False
     finally:
         cursor.close()
@@ -122,10 +122,10 @@ def update_release(rid, title):
     try:
         cursor.execute(sql, (title, rid))
         db.commit()
-        print("Release title updated successfully.")
+        #Sprint("Release title updated successfully.")
         return True
     except mysql.connector.Error as e:
-        print("Error updating release:", e)
+        #print("Error updating release:", e)
         return False
     finally:
         cursor.close()
@@ -149,9 +149,9 @@ def list_releases(uid):
         if not results:
             print("No releases found for this viewer.")
             return False
-        print("Table - rid, genre, title")
+        #print("Table - rid, genre, title")
         for row in results:
-            print(row)
+            print(",".join(map(str, row)))
         return True
     except mysql.connector.Error as e:
         print("Error fetching releases:", e)
@@ -180,10 +180,10 @@ def popular_release(N):
         if not results:
             print("No popular releases found.")
             return False
-        print("Table - rid, title, reviewCount")
-        for row in results:
-            print(row)
-        return True
+       # print("Table - rid, title, reviewCount")
+        #for row in results:
+            #print(row)
+        #return True
     except mysql.connector.Error as e:
         print("Error fetching popular releases:", e)
         return False
@@ -211,9 +211,9 @@ def release_title(sid):
         if not results:
             print("No release found for this session ID.")
             return False
-        print("Table - rid, release_title, genre, video_title, ep_num, length")
+        #print("Table - rid, release_title, genre, video_title, ep_num, length")
         for row in results:
-            print(row)
+            print(",".join(map(str, row)))
         return True
     except mysql.connector.Error as e:
         print("Error fetching release title:", e)
@@ -246,9 +246,9 @@ def active_viewers(N, start_date, end_date):
         if not results:
             print("No active viewers found.")
             return False
-        print("Table - UID, first name, last name")
-        for row in results:
-            print(row)
+        #print("Table - UID, first name, last name")
+        #for row in results:
+            #print(row)
         return True
     except mysql.connector.Error as e:
         print("Error fetching active viewers:", e)
@@ -277,9 +277,9 @@ def videos_viewed(rid):
         if not results:
             print("No videos found for this rid.")
             return False
-        print("Table - RID, ep_num, title, length, COUNT")
+        #print("Table - RID, ep_num, title, length, COUNT")
         for row in results:
-            print(row)
+            print(",".join(map(str, row)))
         return True
     except mysql.connector.Error as e:
         print("Error fetching videos viewed:", e)

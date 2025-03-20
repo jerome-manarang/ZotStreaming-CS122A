@@ -2,7 +2,7 @@ import sys
 import os
 
 from db_connection import connect_db
-from booleans import insert_viewer, add_genre, delete_viewer, insert_movie, insert_session, update_release
+from booleans import insert_viewer, add_genre, delete_viewer, insert_movie, insert_session, update_release, list_releases, popular_release, release_title, active_viewers, videos_viewed
 from import_data import reset_database, import_data
 
 def main():
@@ -22,29 +22,31 @@ def main():
         # Convert folder_name to an absolute path (supports external folders)
         folder_name = os.path.abspath(folder_name)
 
-        print("Resetting database...")
+        #reset to clear
         reset_database()
 
-        print(f"Importing data from {folder_name}...")
         success = import_data(folder_name)
 
-        if success:
-            print("Import successful.")
+        if success == True:
+            print("Success")
         else:
-            print("Import failed.")
+            print("Fail")
 
-    if command == "insertViewer":
+    elif command == "insertViewer":
         args = sys.argv[2:]  # Remove 'insertViewer' from args
         if len(args) != 12:
-            print("Error, please input correct parameters: python3 project.py insertViewer <uid> <email> <nickname> <street> <city> <state> <zip> <genres> <joined_date> <first> <last> <subscription>")
+            print("Error, please input correct parameters: python3 project.py insertViewer <uid> <first_name> <last_name> <subscription>")
             sys.exit(1)
 
-        uid, email, nickname, street, city, state, zip_code = args[:7]
-        genres = args[7]  # Keep genres as is
-        joined_date, first, last, subscription = args[8:]
+        uid, first_name, last_name, subscription = args[:4]
+        #genres = args[4]
+        #joined_date, first_name, last_name, subscription = args[5:]
 
-        success = insert_viewer(uid, email, nickname, street, city, state, zip_code, genres, joined_date, first, last, subscription)
-        print(success)
+        success = insert_viewer(uid, first_name, last_name, subscription)
+        if success == True:
+            print("Success")
+        else:
+            print("Fail")
 
     elif command == "addGenre":
         if len(sys.argv) != 4:
@@ -107,46 +109,52 @@ def main():
         else:
             print("Fail")
     elif command == "listReleases":
-        if len(sys.argv) != 4:
+        if len(sys.argv) != 3:
             print("Error, please input correct parameters: python3 project.py listReleases <uid>")
             sys.exit(1)
         success = list_releases(sys.argv[2])
-        print(success)
+        #if success == True:
+            #print("Success")
+        #else:
+            #print("Fail")
     
     elif command == "popularRelease":
-        if len(sys.argv) != 4:
+        if len(sys.argv) != 3:
             print("Error, please input correct parameters: python3 project.py popularRelease <N>")
             sys.exit(1)
         success = popular_release(sys.argv[2])
-        print(success)
+        if success == True:
+            print("Success")
+        else:
+            print("Fail")
 
     elif command == "releaseTitle":
-        if len(sys.argv) != 4:
+        if len(sys.argv) != 3:
             print("Error, please input correct parameters: python3 project.py releaseTitle <sid>")
             sys.exit(1)
         success = release_title(sys.argv[2])
-        print(success)
+        
 
     elif command == "activeViewer":
-        if len(sys.argv) != 4:
+        if len(sys.argv) != 5:
             print("Error, please input correct parameters: python3 project.py activeViewer <N> <start:date> <end:date>")
             sys.exit(1)
         success = active_viewers(sys.argv[2], sys.argv[3],sys.argv[4])
-        print(success)
+        if success == True:
+            print("Success")
+        else:
+            print("Fail")
 
     elif command == "videosViewed":
-        if len(sys.argv) != 4:
+        if len(sys.argv) != 3:
             print("Error, please input correct parameters: python3 project.py videosViewed <rid>")
             sys.exit(1)
         success = videos_viewed(sys.argv[2])
-        print(success)
+        
 
-
-
-
-    else:
-        print("Unknown command.")
-        sys.exit(1)
+    #else:
+        #print("Unknown command.")
+        #sys.exit(1)
 
 if __name__ == "__main__":
     main()
