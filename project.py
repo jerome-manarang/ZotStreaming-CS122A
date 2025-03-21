@@ -7,7 +7,7 @@ from import_data import reset_database, import_data
 
 def main():
     if len(sys.argv) < 2:
-        print("Error, please input correct parameters: python3 project.py <command> [parameters]")
+        print("error, please input correct parameters: python3 project.py <command> [parameters]")
         sys.exit(1)
 
     command = sys.argv[1]
