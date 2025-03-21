@@ -10,6 +10,16 @@ from db_connection import connect_db
 def insert_viewer(uid, first_name, last_name, subscription):
     db = connect_db()
     cursor = db.cursor()
+
+    # Check if the uid already exists
+    cursor.execute("SELECT uid FROM viewers WHERE uid = %s", (uid,))
+    existing_viewer = cursor.fetchone()
+
+    if existing_viewer:
+        cursor.close()
+        db.close()
+        return False  # Duplicate UID found
+
     
     sql = """
     INSERT INTO viewers (uid, first_name, last_name, subscription)
@@ -275,16 +285,22 @@ def videos_viewed(rid):
     cursor = db.cursor()
 
     sql = """
-    SELECT v.rid, v.ep_num, v.title, v.length, COALESCE(COUNT(DISTINCT s.uid), 0) AS viewer_count
-    FROM videos v
-    LEFT JOIN sessions s ON v.rid = s.rid AND v.ep_num = s.ep_num
-    WHERE v.rid = %s
-    GROUP BY v.rid, v.ep_num, v.title, v.length
-    ORDER BY v.rid DESC;
+    SELECT v.rid, v.ep_num, v.title, v.length,
+       COALESCE(vc.viewer_count, 0) AS viewer_count
+FROM videos v
+LEFT JOIN (
+    SELECT s.rid, COUNT(DISTINCT s.uid) AS viewer_count
+    FROM sessions s
+    WHERE s.rid = %s
+    GROUP BY s.rid
+) vc ON v.rid = vc.rid
+WHERE v.rid = %s
+ORDER BY v.ep_num;
+
     """
 
     try:
-        cursor.execute(sql, (rid,))
+        cursor.execute(sql, (rid,rid))
         results = cursor.fetchall()
         if not results:
             print("No videos found for this rid.")
