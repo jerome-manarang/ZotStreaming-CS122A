@@ -159,6 +159,7 @@ def list_releases(uid):
     sql = """
     SELECT DISTINCT r.rid, r.genre, r.title 
     FROM reviews rv
+    JOIN viewers v ON rv.uid = v.uid
     JOIN releases r ON rv.rid = r.rid
     WHERE rv.uid = %s
     ORDER BY r.title ASC;
@@ -168,7 +169,6 @@ def list_releases(uid):
         cursor.execute(sql, (uid,))
         results = cursor.fetchall()
         if not results:
-            print("No releases found for this viewer.")
             return False
         #print("Table - rid, genre, title")
         for row in results:
@@ -188,15 +188,17 @@ def popular_release(N):
 
     sql = f"""
     SELECT r.rid, r.title, COUNT(rv.rvid) AS reviewCount
-    FROM reviews rv
-    JOIN releases r ON rv.rid = r.rid
-    GROUP BY r.rid, r.title
-    ORDER BY reviewCount DESC, r.rid DESC
-    LIMIT {int(N)};
+FROM reviews rv
+JOIN viewers v ON rv.uid = v.uid
+JOIN releases r ON rv.rid = r.rid
+GROUP BY r.rid, r.title
+ORDER BY reviewCount DESC, r.rid DESC
+LIMIT %s;
+
     """
 
     try:
-        cursor.execute(sql)
+        cursor.execute(sql, (int(N),))
         results = cursor.fetchall()
         if not results:
             print("No popular releases found.")
@@ -291,11 +293,13 @@ FROM videos v
 LEFT JOIN (
     SELECT s.rid, COUNT(DISTINCT s.uid) AS viewer_count
     FROM sessions s
+    JOIN viewers v ON s.uid = v.uid
     WHERE s.rid = %s
     GROUP BY s.rid
 ) vc ON v.rid = vc.rid
 WHERE v.rid = %s
 ORDER BY v.ep_num;
+
 
     """
 
