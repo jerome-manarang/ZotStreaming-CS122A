@@ -285,16 +285,22 @@ def videos_viewed(rid):
     cursor = db.cursor()
 
     sql = """
-    SELECT v.rid, v.ep_num, v.title, v.length, COALESCE(COUNT(DISTINCT s.uid), 0) AS viewer_count
-    FROM videos v
-    LEFT JOIN sessions s ON v.rid = s.rid AND v.ep_num = s.ep_num
-    WHERE v.rid = %s
-    GROUP BY v.rid, v.ep_num, v.title, v.length
-    ORDER BY v.rid DESC;
+    SELECT v.rid, v.ep_num, v.title, v.length,
+       COALESCE(vc.viewer_count, 0) AS viewer_count
+FROM videos v
+LEFT JOIN (
+    SELECT s.rid, COUNT(DISTINCT s.uid) AS viewer_count
+    FROM sessions s
+    WHERE s.rid = %s
+    GROUP BY s.rid
+) vc ON v.rid = vc.rid
+WHERE v.rid = %s
+ORDER BY v.ep_num;
+
     """
 
     try:
-        cursor.execute(sql, (rid,))
+        cursor.execute(sql, (rid,rid))
         results = cursor.fetchall()
         if not results:
             print("No videos found for this rid.")
