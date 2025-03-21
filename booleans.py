@@ -10,6 +10,16 @@ from db_connection import connect_db
 def insert_viewer(uid, first_name, last_name, subscription):
     db = connect_db()
     cursor = db.cursor()
+
+    # Check if the uid already exists
+    cursor.execute("SELECT uid FROM viewers WHERE uid = %s", (uid,))
+    existing_viewer = cursor.fetchone()
+
+    if existing_viewer:
+        cursor.close()
+        db.close()
+        return False  # Duplicate UID found
+
     
     sql = """
     INSERT INTO viewers (uid, first_name, last_name, subscription)
