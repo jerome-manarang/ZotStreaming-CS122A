@@ -19,7 +19,7 @@ def main():
 
         folder_name = sys.argv[2]
 
-        # Convert folder_name to an absolute path (supports external folders)
+        #creating absoulte path
         folder_name = os.path.abspath(folder_name)
 
         #reset to clear
@@ -33,7 +33,7 @@ def main():
             print("Fail")
 
     elif command == "insertViewer":
-        args = sys.argv[2:]  # Remove 'insertViewer' from args
+        args = sys.argv[2:]  
         if len(args) != 12:
             print("Error, please input correct parameters: python3 project.py insertViewer <uid> <first_name> <last_name> <subscription>")
             sys.exit(1)
@@ -79,7 +79,7 @@ def main():
             print("Fail")
 
     elif command == "insertSession":
-        args = sys.argv[2:]  # Remove 'insertSession' from args
+        args = sys.argv[2:]  
         if len(args) != 8:
             print("Error, please input correct parameters: python3 project.py insertSession <sid> <uid> <rid> <ep_num> <initiate_at> <leave_at> <quality> <device>")
         else: #parsing

@@ -9,6 +9,6 @@ def connect_db():
     return mysql.connector.connect(
         #host="localhost",
         user="test",
-        password="password",  # Update if needed
+        password="password",
         database="cs122a"
     )

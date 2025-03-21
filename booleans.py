@@ -11,14 +11,14 @@ def insert_viewer(uid, first_name, last_name, subscription):
     db = connect_db()
     cursor = db.cursor()
 
-    # Check if the uid already exists
+    #insert viewer test case 2 checks if we FAIL when inserting same uid
     cursor.execute("SELECT uid FROM viewers WHERE uid = %s", (uid,))
     existing_viewer = cursor.fetchone()
 
     if existing_viewer:
         cursor.close()
         db.close()
-        return False  # Duplicate UID found
+        return False  #duplicate so return FAIL
 
     
     sql = """
@@ -188,12 +188,12 @@ def popular_release(N):
 
     sql = f"""
     SELECT r.rid, r.title, COUNT(rv.rvid) AS reviewCount
-FROM reviews rv
-JOIN viewers v ON rv.uid = v.uid
-JOIN releases r ON rv.rid = r.rid
-GROUP BY r.rid, r.title
-ORDER BY reviewCount DESC, r.rid DESC
-LIMIT %s;
+    FROM reviews rv
+    JOIN viewers v ON rv.uid = v.uid
+    JOIN releases r ON rv.rid = r.rid
+    GROUP BY r.rid, r.title
+    ORDER BY reviewCount DESC, r.rid DESC
+    LIMIT %s;
 
     """
 
@@ -289,16 +289,16 @@ def videos_viewed(rid):
     sql = """
     SELECT v.rid, v.ep_num, v.title, v.length,
        COALESCE(vc.viewer_count, 0) AS viewer_count
-FROM videos v
-LEFT JOIN (
+    FROM videos v
+    LEFT JOIN (
     SELECT s.rid, COUNT(DISTINCT s.uid) AS viewer_count
     FROM sessions s
     JOIN viewers v ON s.uid = v.uid
     WHERE s.rid = %s
     GROUP BY s.rid
-) vc ON v.rid = vc.rid
-WHERE v.rid = %s
-ORDER BY v.ep_num;
+    ) vc ON v.rid = vc.rid
+    WHERE v.rid = %s
+    ORDER BY v.ep_num;
 
 
     """

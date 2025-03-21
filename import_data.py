@@ -7,7 +7,7 @@ from db_connection import connect_db  # Import the database connection function
 # FUNCTION REQUIREMENT NUMBER ONE: IMPORT DATA
 ###
 
-# Function to delete existing tables
+#this deletes existing tables, will be used when we import to create new table2
 def reset_database():
     db = connect_db()
     cursor = db.cursor()
